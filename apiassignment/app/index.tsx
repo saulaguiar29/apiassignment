@@ -53,6 +53,7 @@ export default function Index() {
 
   const handlePokemonPress = (pokemon: Pokemon) => {
     const id = pokemon.url.split("/").slice(-2)[0];
+    // Navigate to the Pokémon detail page by interpolating the id into the path
     router.push(`/pokemon/${id}`);
   };
 
