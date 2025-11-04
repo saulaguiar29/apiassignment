@@ -1,59 +1,44 @@
-import React, { useState, useEffect } from "react";
-import { View, StyleSheet, FlatList, Alert } from "react-native";
+import React, { useState, useCallback, useRef } from "react";
+import { View, StyleSheet, FlatList } from "react-native";
 import { Searchbar, FAB } from "react-native-paper";
-import { router } from "expo-router";
+import { router, useFocusEffect } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import PokemonCard from "../components/PokemonCard";
 import LoadingSpinner from "../components/LoadingSpinner";
-import { fetchPokemonList } from "../services/pokemonApi";
+import { usePokemonList } from "../hooks/usePokemon";
 import { Pokemon } from "../types/pokemon";
 
 export default function Index() {
-  const [pokemonList, setPokemonList] = useState<Pokemon[]>([]);
-  const [filteredList, setFilteredList] = useState<Pokemon[]>([]);
-  const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
+  const { filteredList, loading, searchPokemon, pokemonList } = usePokemonList(
+    151,
+    0
+  );
   const insets = useSafeAreaInsets();
+  const isFirstLoad = useRef(true);
 
-  useEffect(() => {
-    loadPokemon();
-  }, []);
+  useFocusEffect(
+    useCallback(() => {
+      if (isFirstLoad.current) {
+        isFirstLoad.current = false;
+        return;
+      }
 
-  const loadPokemon = async () => {
-    try {
-      setLoading(true);
-      // Fetch first 151 Pokemon (Gen 1)
-      const data = await fetchPokemonList(151, 0);
-      setPokemonList(data.results);
-      setFilteredList(data.results);
-    } catch (error) {
-      console.error("Error loading Pokemon:", error);
-      Alert.alert(
-        "Error",
-        "Failed to load Pokémon. Please check your internet connection and try again."
-      );
-    } finally {
-      setLoading(false);
-    }
-  };
+      if (pokemonList.length > 0 && searchQuery !== "") {
+        setSearchQuery("");
+        searchPokemon("");
+      }
+    }, [searchQuery, pokemonList.length])
+  );
 
   const handleSearch = (query: string) => {
     setSearchQuery(query);
-
-    if (query.trim() === "") {
-      setFilteredList(pokemonList);
-    } else {
-      const filtered = pokemonList.filter((pokemon) =>
-        pokemon.name.toLowerCase().includes(query.toLowerCase())
-      );
-      setFilteredList(filtered);
-    }
+    searchPokemon(query);
   };
 
   const handlePokemonPress = (pokemon: Pokemon) => {
     const id = pokemon.url.split("/").slice(-2)[0];
-    // Navigate to the Pokémon detail page by interpolating the id into the path
     router.push(`/pokemon/${id}`);
   };
 

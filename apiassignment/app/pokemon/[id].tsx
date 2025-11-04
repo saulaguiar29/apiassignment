@@ -1,12 +1,5 @@
-import React, { useState, useEffect } from "react";
-import {
-  View,
-  StyleSheet,
-  ScrollView,
-  Image,
-  Alert,
-  Dimensions,
-} from "react-native";
+import React from "react";
+import { View, StyleSheet, ScrollView, Image, Dimensions } from "react-native";
 import { Text, Card, Chip } from "react-native-paper";
 import { useLocalSearchParams } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -14,36 +7,15 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import LoadingSpinner from "../../components/LoadingSpinner";
 import TypeBadge from "../../components/TypeBadge";
 import StatBar from "../../components/StatBar";
-import { fetchPokemonDetail } from "../../services/pokemonApi";
-import { PokemonDetail } from "../../types/pokemon";
+import { usePokemonDetail } from "../../hooks/usePokemon";
 import { formatPokemonName } from "../../utils/pokemonHelpers";
 
 const { width } = Dimensions.get("window");
 
 export default function PokemonDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
-  const [pokemon, setPokemon] = useState<PokemonDetail | null>(null);
-  const [loading, setLoading] = useState(true);
+  const { pokemon, loading } = usePokemonDetail(id);
   const insets = useSafeAreaInsets();
-
-  useEffect(() => {
-    if (id) {
-      loadPokemonDetail();
-    }
-  }, [id]);
-
-  const loadPokemonDetail = async () => {
-    try {
-      setLoading(true);
-      const data = await fetchPokemonDetail(id);
-      setPokemon(data);
-    } catch (error) {
-      console.error("Error loading Pokemon detail:", error);
-      Alert.alert("Error", "Failed to load Pokémon details. Please try again.");
-    } finally {
-      setLoading(false);
-    }
-  };
 
   if (loading) {
     return <LoadingSpinner message="Loading Pokémon details..." />;

@@ -1,11 +1,10 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { View, StyleSheet, FlatList, Alert, Pressable } from "react-native";
 import { Text, Card } from "react-native-paper";
-import { router } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import LoadingSpinner from "../components/LoadingSpinner";
-import { fetchPokemonTypes } from "../services/pokemonApi";
+import { usePokemonTypes } from "../hooks/usePokemon";
 import { TypeInfo } from "../types/pokemon";
 import {
   getTypeColor,
@@ -14,34 +13,10 @@ import {
 } from "../utils/pokemonHelpers";
 
 export default function TypesScreen() {
-  const [types, setTypes] = useState<TypeInfo[]>([]);
-  const [loading, setLoading] = useState(true);
+  const { types, loading } = usePokemonTypes();
   const insets = useSafeAreaInsets();
 
-  useEffect(() => {
-    loadTypes();
-  }, []);
-
-  const loadTypes = async () => {
-    try {
-      setLoading(true);
-      const data = await fetchPokemonTypes();
-      // Filter out some special types that don't have many Pokemon
-      const filteredTypes = data.results.filter(
-        (type) => !["unknown", "shadow"].includes(type.name)
-      );
-      setTypes(filteredTypes);
-    } catch (error) {
-      console.error("Error loading types:", error);
-      Alert.alert("Error", "Failed to load Pokémon types. Please try again.");
-    } finally {
-      setLoading(false);
-    }
-  };
-
   const handleTypePress = (typeName: string) => {
-    // This could navigate to a filtered list of Pokemon by type
-    // For now, just show an alert
     Alert.alert(
       capitalizeFirstLetter(typeName) + " Type",
       `You selected ${typeName} type Pokémon!\n\nThis would show all ${typeName} type Pokémon in a full implementation.`
