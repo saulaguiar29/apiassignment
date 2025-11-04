@@ -95,10 +95,6 @@ export async function fetchPokemonByType(typeName: string): Promise<any> {
   }
 }
 
-/**
- * Extract Pokemon ID from URL
- * Helper function to get ID from Pokemon API URL
- */
 export function getPokemonIdFromUrl(url: string): number {
   const parts = url.split("/");
   return parseInt(parts[parts.length - 2]);

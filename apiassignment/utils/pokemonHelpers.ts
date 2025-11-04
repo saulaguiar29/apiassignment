@@ -1,6 +1,3 @@
-// Pokemon type colors for badges and UI elements
-// Based on official Pokemon type colors
-
 export const TYPE_COLORS: Record<string, string> = {
   normal: "#A8A878",
   fire: "#F08030",

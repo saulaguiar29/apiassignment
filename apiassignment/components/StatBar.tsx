@@ -16,12 +16,11 @@ export default function StatBar({
 }: StatBarProps) {
   const percentage = (value / maxValue) * 100;
 
-  // Color based on stat value
   const getBarColor = () => {
-    if (value >= 150) return "#27ae60"; // High - green
-    if (value >= 100) return "#f39c12"; // Medium - orange
-    if (value >= 50) return "#3498db"; // Low-medium - blue
-    return "#e74c3c"; // Low - red
+    if (value >= 150) return "#27ae60";
+    if (value >= 100) return "#f39c12";
+    if (value >= 50) return "#3498db";
+    return "#e74c3c";
   };
 
   return (

@@ -1,13 +1,12 @@
 import { Stack } from "expo-router";
 import { PaperProvider, MD3LightTheme } from "react-native-paper";
 
-// Custom theme based on Pokemon colors
 const theme = {
   ...MD3LightTheme,
   colors: {
     ...MD3LightTheme.colors,
-    primary: "#e74c3c", // Pokemon Red
-    secondary: "#3498db", // Pokemon Blue
+    primary: "#e74c3c",
+    secondary: "#3498db",
     background: "#f8f9fa",
     surface: "#ffffff",
   },
